@@ -20,7 +20,6 @@ class StopWatch:
 
         end = self._func()
         self._elapsed_s += end - self._start
-        self._start = None
 
     def reset(self):
         self._elapsed_s = 0.0

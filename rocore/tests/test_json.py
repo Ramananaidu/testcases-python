@@ -1,7 +1,7 @@
 import pytest
 import uuid
 from datetime import datetime, date, time
-from rocore.serialization.json import dumps
+from rocore.json import dumps
 
 
 @pytest.mark.parametrize('value,expected_json', [
