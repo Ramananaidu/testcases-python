@@ -4,7 +4,7 @@ from rocore.exceptions import EmptyArgumentException
 
 __all__ = ['parse', 'parse_datetime', 'parse_date', 'parse_time']
 
-time_rx = re.compile("(\\d{2})\\D(\\d{1,2})\\D(\\d{1,2})?")
+time_rx = re.compile("(\\d{2})\\D(\\d{1,2})(?:\\D(\\d{1,2}))?")
 date_rx = re.compile("(\\d{4})\\D(\\d{1,2})\\D(\\d{1,2})?")
 datetime_rx = re.compile("(\\d{4})\\D(\\d{1,2})\\D(\\d{1,2})(?:\\D{1}(\\d{1,2})"
                          "\\D(\\d{1,2})(?:\\D(\\d{1,2}))?(?:\\D(\\d+))?)?")
@@ -37,6 +37,6 @@ def parse(value, desired_type):
     if desired_type == datetime:
         return parse_datetime(value)
     if desired_type == date:
-        return parse_date()
+        return parse_date(value)
     if desired_type == time:
         return parse_time(value)

@@ -2,6 +2,7 @@ import re
 import uuid
 import pytest
 import decimal
+from datetime import datetime, date, time
 from enum import Enum
 from rocore.exceptions import InvalidArgument, EmptyArgumentException
 from rocore.models import (Model,
@@ -15,6 +16,9 @@ from rocore.models import (Model,
                            Float,
                            Decimal,
                            Guid,
+                           Date,
+                           DateTime,
+                           Time,
                            InvalidPatternError,
                            ExpectedTypeError,
                            Collection)
@@ -624,3 +628,57 @@ def test_guid_property_default_not_nullable():
 
     with pytest.raises(EmptyArgumentException):
         Example(None)
+
+
+@pytest.mark.parametrize('value,expected_result',
+[
+    ('10:20:15', time(10, 20, 15)),
+    (time(10, 20, 15), time(10, 20, 15)),
+    ('05:30', time(5, 30, 0)),
+])
+def test_time_property(value, expected_result):
+
+    class Example(Model):
+        value = Time()
+
+        def __init__(self, value):
+            self.value = value
+
+    instance = Example(value)
+    assert instance.value == expected_result
+
+
+@pytest.mark.parametrize('value,expected_result',
+[
+    ('2018-05-30', date(2018, 5, 30)),
+    (date(2018, 5, 30), date(2018, 5, 30)),
+    ('2018-02-10', date(2018, 2, 10)),
+])
+def test_date_property(value, expected_result):
+
+    class Example(Model):
+        value = Date()
+
+        def __init__(self, value):
+            self.value = value
+
+    instance = Example(value)
+    assert instance.value == expected_result
+
+
+@pytest.mark.parametrize('value,expected_result',
+[
+    ('2018-05-30 10:20:15', datetime(2018, 5, 30, 10, 20, 15)),
+    (datetime(2018, 5, 30, 10, 20, 15), datetime(2018, 5, 30, 10, 20, 15)),
+    ('2018-02-10 05:30:00', datetime(2018, 2, 10, 5, 30, 0)),
+])
+def test_datetime_property(value, expected_result):
+
+    class Example(Model):
+        value = DateTime()
+
+        def __init__(self, value):
+            self.value = value
+
+    instance = Example(value)
+    assert instance.value == expected_result

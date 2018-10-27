@@ -7,7 +7,7 @@ def readme():
 
 
 setup(name='rocore',
-      version='1.0.2',
+      version='1.0.5',
       description='Core classes and functions, reusable in any kind of Python application',
       long_description=readme(),
       long_description_content_type='text/markdown',
@@ -22,7 +22,7 @@ setup(name='rocore',
       author_email='roberto.prevato@gmail.com',
       keywords='core utilities',
       license='MIT',
-      packages=['rocore'],
+      packages=['rocore', 'rocore.typesutils'],
       install_requires=[],
       include_package_data=True,
       zip_safe=False)
