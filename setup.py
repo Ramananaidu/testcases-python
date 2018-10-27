@@ -7,7 +7,7 @@ def readme():
 
 
 setup(name='rocore',
-      version='1.0.1',
+      version='1.0.2',
       description='Core classes and functions, reusable in any kind of Python application',
       long_description=readme(),
       long_description_content_type='text/markdown',
