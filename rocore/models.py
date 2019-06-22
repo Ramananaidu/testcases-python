@@ -10,6 +10,7 @@ import re
 import os
 import uuid
 import decimal
+import inspect
 from typing.re import Pattern
 from datetime import datetime, date, time
 from collections.abc import Mapping, Iterable
@@ -85,9 +86,6 @@ class Validated(AutoStorage):
         if not self.nullable and value is None:
             raise EmptyArgumentException(self.property_name)
 
-        if value is None:
-            return value
-
     def validate(self, instance, value):
         """return validated value or raise InvalidArgument"""
 
@@ -108,19 +106,16 @@ def _get_dynamic_init(cls, properties):
     code = ''.join(lines)
     ldict = {}
 
-    try:
-        if __debug__:
-            # create files dynamically,
-            # to support debugging into dynamic __init__ functions
-            init_file_name = f'built/{cls_full_name}_init_.py'
-            with open(init_file_name, encoding='utf8', mode='wt') as init_file:
-                init_file.write(code)
-                code_block = compile(code, os.path.realpath(init_file.name), 'exec')
-                exec(code_block, ldict)
-        else:
-            exec(code, globals(), ldict)
-    except SyntaxError as syx:
-        raise SyntaxError(str(syx) + ':\n' + code)
+    if __debug__:
+        # create files dynamically,
+        # to support debugging into dynamic __init__ functions
+        init_file_name = f'built/{cls_full_name}_init_.py'
+        with open(init_file_name, encoding='utf8', mode='wt') as init_file:
+            init_file.write(code)
+            code_block = compile(code, os.path.realpath(init_file.name), 'exec')
+            exec(code_block, ldict)
+    else:
+        exec(code, globals(), ldict)
 
     return ldict['__init__']
 
@@ -218,13 +213,6 @@ class RangeValidatable:
             raise InvalidArgument(f'Value `{self.property_name}` cannot be smaller than {str(min_value)}.')
 
 
-class Required(Validated):
-    def validate(self, instance, value):
-        if value is None:
-            raise EmptyArgumentException(self.property_name)
-        return value
-
-
 class Callable(Validated):
 
     def validate(self, instance, value):
@@ -243,6 +231,10 @@ class OfType(Validated):
         super().__init__(**kwargs)
         if required_type is None:
             raise EmptyArgumentException('required_type')
+
+        if not inspect.isclass(required_type):
+            raise InvalidArgument('expected a type')
+
         self.required_type = required_type
 
     def validate(self, instance, value):
@@ -263,6 +255,10 @@ class SubclassOf(Validated):
         super().__init__(**kwargs)
         if ancestor_type is None:
             raise EmptyArgumentException('required_type')
+
+        if not inspect.isclass(ancestor_type):
+            raise InvalidArgument('expected a class type')
+
         self.ancestor_type = ancestor_type
 
     def validate(self, instance, value):
@@ -329,11 +325,13 @@ class TimeValidated(Validated, RangeValidatable):
                 value = dateutils.parse(value, self._desired_type)
             except ValueError:
                 raise ExpectedTypeError(self.property_name, self._desired_type)
+
         if isinstance(value, Iterable):
             try:
                 value = self._desired_type(*value)
-            except TypeError:
+            except ValueError:
                 raise ExpectedTypeError(self.property_name, self._desired_type)
+
         if not isinstance(value, self._desired_type):
             raise ExpectedTypeError(self.property_name, self._desired_type)
         self.validate_range(value)

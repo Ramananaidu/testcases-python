@@ -58,3 +58,16 @@ def test_expiration_policy():
     assert expired is None
 
     assert 6 not in cache
+
+
+def test_expiration_policy_when_full():
+    cache = Cache(expiration_policy=lambda item: item.value > 1, max_size=2)
+
+    cache.set('a', 1)
+    cache.set('b', 2)
+    cache.set('c', 0)
+
+    assert cache.get('b') is None
+    assert cache.get('a').value == 1
+    assert cache.get('c').value == 0
+

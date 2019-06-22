@@ -9,6 +9,7 @@
 * [implementation of simple in-memory cache, supporting expiration of items and capped lists](https://github.com/RobertoPrevato/rocore/wiki/Caching)
 * utilities to work with `folders` and paths
 * [`StopWatch` implementation](https://github.com/RobertoPrevato/rocore/wiki/StopWatch-implementation)
+* [a base class to handle classes that can be instantiated from configuration dictionaries](https://github.com/RobertoPrevato/rocore/wiki/Registry)
 
 ## Installation
 
@@ -21,8 +22,11 @@ Please refer to documentation in the project wiki: [https://github.com/RobertoPr
 
 ## Develop and run tests locally
 ```bash
-pip install -r dev_requirements.txt
+pip install -r requirements.txt
 
 # run tests using automatic discovery:
 pytest
+
+# with code coverage:
+make testcov
 ```

@@ -16,6 +16,7 @@ def deprecated(message=None, raise_exception=False):
         message = ' ' + message
     else:
         message = ''
+
     def _deprecated(f):
         @wraps(f)
         def wrapped(*args, **kwargs):

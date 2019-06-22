@@ -17,5 +17,9 @@ release:
 	twine upload --repository-url https://upload.pypi.org/legacy/ dist/*
 
 
+testcov:
+	pytest --cov-report html --cov=rocore tests/
+
+
 test:
 	pytest -v -W ignore

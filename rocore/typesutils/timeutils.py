@@ -3,18 +3,15 @@ from datetime import time
 
 
 class TimePrecision(Enum):
-    hour = 1
-    minute = 2
-    second = 3
-    millisecond = 4
-    microsecond = 5
+    HOUR = 1
+    MINUTE = 2
+    SECOND = 3
+    MICROSECOND = 4
 
 
-def time_to_seconds(a: time):
+def time_to_seconds(value: time):
     """Gets the total seconds from a time object, discarding its microseconds information."""
-    return a.hour * 60 * 60 + \
-           a.minute * 60 + \
-           a.second
+    return value.hour * 60 * 60 + value.minute * 60 + value.second
 
 
 def time_from_seconds(s: int):
@@ -24,13 +21,13 @@ def time_from_seconds(s: int):
     return time(int(h), int(m), int(s))
 
 
-def time_to_microseconds(a: time):
+def time_to_microseconds(value: time):
     """Gets the total microseconds from a time object."""
     b = 1e6
-    return a.hour * 60 * 60 * b + \
-           a.minute * 60 * b + \
-           a.second * b + \
-           a.microsecond
+    return value.hour * 60 * 60 * b + \
+           value.minute * 60 * b + \
+           value.second * b + \
+           value.microsecond
 
 
 def time_from_microseconds(a: int):
@@ -42,20 +39,14 @@ def time_from_microseconds(a: int):
 
 
 def get_time_precision(*args):
-    """
-    Returns the minimum TimePrecision that can be used to represent times.
-
-    :param args: any number of time compatible objects
-    :return: the laziest precision at which time objects can be represented
-    """
+    """Returns the minimum TimePrecision that can be used to represent a time."""
     if any(o.microsecond > 0 for o in args):
-        return TimePrecision.microsecond
+        return TimePrecision.MICROSECOND
 
     if any(o.second > 0 for o in args):
-        return TimePrecision.second
+        return TimePrecision.SECOND
 
     if any(o.minute > 0 for o in args):
-        return TimePrecision.minute
+        return TimePrecision.MINUTE
 
-    return TimePrecision.hour
-
+    return TimePrecision.HOUR

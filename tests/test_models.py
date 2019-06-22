@@ -4,6 +4,7 @@ import pytest
 import decimal
 from datetime import datetime, date, time
 from enum import Enum
+from pytest import raises
 from rocore.exceptions import InvalidArgument, EmptyArgumentException
 from rocore.models import (Model,
                            _generalize_init_type_error_message,
@@ -21,7 +22,14 @@ from rocore.models import (Model,
                            Time,
                            InvalidPatternError,
                            ExpectedTypeError,
-                           Collection)
+                           Collection,
+                           EmptyStringError,
+                           Anything,
+                           SubclassOf,
+                           Boolean,
+                           ExpectedSubclassOfTypeError,
+                           Callable,
+                           ExpectedCallableError)
 
 
 class Address(Model):
@@ -682,3 +690,191 @@ def test_datetime_property(value, expected_result):
 
     instance = Example(value)
     assert instance.value == expected_result
+
+
+def test_non_blank_string_raises_for_blank_value():
+
+    class X(Model):
+        value = String(allow_blank=False, nullable=False)
+
+    with raises(EmptyStringError):
+        string_prop = String(allow_blank=False)
+        string_prop.validate(None, None)
+
+    with raises(EmptyStringError):
+        X('  ')
+
+
+def test_blankable_string_does_not_raises_for_blank_value():
+    string_prop = String(allow_blank=True)
+    string_prop.validate(None, None)
+
+
+def test_time_raises_for_invalid_str():
+    prop = Time()
+
+    with raises(ExpectedTypeError):
+        prop.validate(None, 'XXX')
+
+
+def test_time_raises_for_invalid_iterable():
+    prop = Time()
+
+    with raises(ExpectedTypeError):
+        prop.validate(None, (-1999,))
+
+
+def test_time_raises_for_invalid_type():
+    prop = Time()
+
+    with raises(ExpectedTypeError):
+        prop.validate(None, 23)
+
+
+def test_guid_aises_for_invalid_str():
+    prop = Guid()
+
+    with raises(ExpectedTypeError):
+        prop.validate(None, 'xxx')
+
+
+def test_guid_aises_for_invalid_type():
+    prop = Guid()
+
+    with raises(ExpectedTypeError):
+        prop.validate(None, False)
+
+
+def test_anything():
+    prop = Anything()
+
+    prop.validate(None, 10)
+    prop.validate(None, 'AAA')
+    prop.validate(None, False)
+    prop.validate(None, [])
+
+
+def test_bool():
+    prop = Boolean()
+
+    assert prop.validate(None, 1) is True
+    assert prop.validate(None, True) is True
+    assert prop.validate(None, 0) is False
+    assert prop.validate(None, None) is False
+
+
+def test_subclass_of():
+    class A:
+        pass
+
+    class B(A):
+        pass
+
+    class C(B):
+        pass
+
+    prop = SubclassOf(A)
+
+    assert prop.validate(None, B) is B
+    assert prop.validate(None, C) is C
+
+
+def test_subclass_of_raises_for_invalid_type():
+    class A:
+        pass
+
+    class B:
+        pass
+
+    prop = SubclassOf(A)
+
+    with raises(ExpectedSubclassOfTypeError):
+        assert prop.validate(None, B)
+
+
+def test_subclass_of_raises_for_invalid_value_type():
+    class A:
+        pass
+
+    prop = SubclassOf(A)
+
+    with raises(ExpectedSubclassOfTypeError):
+        assert prop.validate(None, 3)
+
+
+def test_subclass_of_allows_none():
+    class A:
+        pass
+
+    prop = SubclassOf(A)
+
+    assert prop.validate(None, None) is None
+
+
+def test_subclass_of_raises_for_missing_argument():
+    with raises(EmptyArgumentException):
+        SubclassOf(None)
+
+
+def test_subclass_of_raises_for_invalid_argument():
+    with raises(InvalidArgument):
+        SubclassOf(100)
+
+
+def test_model_from_dict_raises_for_none():
+    class A(Model):
+        value = String()
+
+    with raises(InvalidArgument):
+        A.from_dict(None)
+
+
+def test_model_callable_raises_for_non_callable():
+    class A(Model):
+        value = Callable()
+
+    with raises(ExpectedCallableError):
+        A(False)
+
+
+def test_model_callable_accepts_null():
+    prop = Callable()
+    assert prop.validate(None, None) is None
+
+
+def test_model_callable():
+    prop = Callable()
+
+    def fn():
+        pass
+
+    assert prop.validate(None, fn) is fn
+
+
+def test_of_type_raises_for_none():
+    with raises(EmptyArgumentException):
+        OfType(None)
+
+
+def test_of_type_raises_for_non_class():
+    with raises(InvalidArgument):
+        OfType(1)
+
+
+def test_of_type_allows_none():
+    prop = OfType(Address)
+
+    assert prop.validate(None, None) is None
+
+
+def test_of_type_raises_for_wrong_type():
+    class A:
+        pass
+
+    class B:
+        pass
+
+    prop = OfType(A)
+
+    with raises(ExpectedTypeError):
+        prop.validate(None, B)

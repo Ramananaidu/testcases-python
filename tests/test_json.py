@@ -1,5 +1,6 @@
-import pytest
 import uuid
+import pytest
+from pytest import raises
 from datetime import datetime, date, time
 from rocore.json import dumps
 
@@ -34,3 +35,14 @@ def test_class_with_to_dict_method():
 
     data = dumps(Example(10, 20))
     assert '{"x": 10, "y": 20, "something_else": true, "date": "2016-03-26"}' == data
+
+
+def test_raises_for_unhandled_class():
+
+    class Example:
+        def __init__(self, x, y):
+            self.x = x
+            self.y = y
+
+    with raises(Exception):
+        dumps(Example(10, 20))

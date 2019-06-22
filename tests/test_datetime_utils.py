@@ -1,6 +1,13 @@
 import pytest
+from pytest import raises
 from datetime import datetime, date, time
+from rocore.exceptions import EmptyArgumentException
 from rocore.typesutils import dateutils
+
+
+def test_parse_with_rx_raises_for_empty_value():
+    with raises(EmptyArgumentException):
+        dateutils.parse_time('')
 
 
 @pytest.mark.parametrize('value,expected_result', [

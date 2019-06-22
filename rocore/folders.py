@@ -1,15 +1,9 @@
 import os
-import errno
 import ntpath
 
 
 def ensure_folder(path):
-    """Ensures that a folder exists. If it doesn't, it creates it."""
-    try:
-        os.makedirs(path)
-    except OSError as exception:
-        if exception.errno != errno.EEXIST:
-            raise
+    os.makedirs(path, exist_ok=True)
 
 
 def split_path(filepath):

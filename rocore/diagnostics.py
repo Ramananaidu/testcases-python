@@ -10,34 +10,29 @@ class StopWatch:
 
     def start(self):
         if self._start is not None:
-            raise RuntimeError("Already started")
+            raise RuntimeError('StopWatch already running')
 
         self._start = self._func()
 
     def stop(self):
         if self._start is None:
-            raise RuntimeError("Not started")
+            raise RuntimeError('StopWatch not running')
 
-        end = self._func()
-        self._elapsed_s += end - self._start
+        self._elapsed_s += self._func() - self._start
 
     def reset(self):
+        self._start = None
         self._elapsed_s = 0.0
 
     @property
     def elapsed_s(self):
-        end = self._func()
-        return end - self._start
+        return self._elapsed_s
 
     @property
     def elapsed_ms(self):
         if self.elapsed_s > 0.0:
             return self.elapsed_s * 1000
         return 0.0
-
-    @property
-    def running(self):
-        return self._start is not None
 
     def __enter__(self):
         self.start()
