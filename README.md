@@ -1,4 +1,4 @@
-[![Build status](https://robertoprevato.visualstudio.com/rocore/_apis/build/status/rocore-CI)](https://robertoprevato.visualstudio.com/rocore/_build/latest?definitionId=13) [![pypi](https://robertoprevato.vsrm.visualstudio.com/_apis/public/Release/badge/43593051-4566-4ca8-82dc-acc870638985/1/2)](https://pypi.org/project/rocore/) [![Test coverage](https://img.shields.io/azure-devops/coverage/robertoprevato/rocore/13.svg)](https://robertoprevato.visualstudio.com/rocore/_build?definitionId=13)
+[![Build status](https://robertoprevato.visualstudio.com/rocore/_apis/build/status/rocore-CI)](https://robertoprevato.visualstudio.com/rocore/_build/latest?definitionId=13) [![pypi](https://img.shields.io/pypi/v/rocore.svg?color=blue)](https://pypi.org/project/rocore/) [![Test coverage](https://img.shields.io/azure-devops/coverage/robertoprevato/rocore/13.svg)](https://robertoprevato.visualstudio.com/rocore/_build?definitionId=13)
 
 # Core classes and functions, reusable in any kind of Python application
 
