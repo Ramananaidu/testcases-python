@@ -10,6 +10,9 @@
 * utilities to work with `folders` and paths
 * [`StopWatch` implementation](https://github.com/RobertoPrevato/rocore/wiki/StopWatch-implementation)
 * [a base class to handle classes that can be instantiated from configuration dictionaries](https://github.com/RobertoPrevato/rocore/wiki/Registry)
+* [common decorator to support retries](https://github.com/RobertoPrevato/rocore/wiki/Retry-decorator)
+* [common decorator to support logging function calls](https://github.com/RobertoPrevato/rocore/wiki/Logs-decorator)
+* [common decorator to control raised exceptions](https://github.com/RobertoPrevato/rocore/wiki/Exception-handle-decorator)
 
 ## Installation
 
