@@ -1,28 +1,14 @@
 import pytest
 import asyncio
 from pytest import raises
-from typing import Any
 from rocore.decorators import retry
-
-
-class CrashTest(RuntimeError):
-
-    def __init__(self, value: Any = ''):
-        super().__init__('Crash!' + (f' {value}' if value else ''))
-        self.value = value
-
-    def __eq__(self, other):
-        if isinstance(other, str):
-            return str(self) == other
-        if isinstance(other, CrashTest):
-            return self.value == other.value
-        return NotImplemented
+from . import CrashTest
 
 
 def test_retry_decorator():
     i = 0
 
-    @retry()
+    @retry(delay=0.01)
     def crashing():
         nonlocal i
         i += 1
@@ -40,7 +26,7 @@ def test_retry_decorator():
 async def test_retry_decorator_async():
     i = 0
 
-    @retry()
+    @retry(delay=0.01)
     async def crashing():
         nonlocal i
         i += 1
@@ -73,7 +59,7 @@ def test_retry_decorator_no_delay():
 
 def test_retry_decorator_exact_exceptions():
 
-    @retry(catch_exceptions_types=CrashTest)
+    @retry(catch_exceptions_types=CrashTest, delay=0.01)
     def crashing():
         return 1 / 0
 
@@ -84,7 +70,7 @@ def test_retry_decorator_exact_exceptions():
 @pytest.mark.asyncio
 async def test_retry_decorator_exact_exceptions_async():
 
-    @retry(catch_exceptions_types=CrashTest)
+    @retry(catch_exceptions_types=CrashTest, delay=0.01)
     async def crashing():
         return 1 / 0
 
@@ -95,7 +81,7 @@ async def test_retry_decorator_exact_exceptions_async():
 def test_retry_decorator_exceeding_attempts_raises():
     i = 0
 
-    @retry(times=3)
+    @retry(times=3, delay=0.01)
     def crashing():
         nonlocal i
         i += 1
@@ -113,7 +99,7 @@ def test_retry_decorator_exceeding_attempts_raises():
 async def test_retry_decorator_exceeding_attempts_raises_async():
     i = 0
 
-    @retry(times=3)
+    @retry(times=3, delay=0.01)
     async def crashing():
         nonlocal i
         i += 1
@@ -135,7 +121,7 @@ def test_retry_decorator_callback():
 
     i = 0
 
-    @retry(on_exception=callback)
+    @retry(on_exception=callback, delay=0.01)
     def crashing():
         nonlocal i
         i += 1
@@ -160,7 +146,7 @@ async def test_retry_decorator_callback_async():
 
     i = 0
 
-    @retry(on_exception=callback)
+    @retry(on_exception=callback, delay=0.01)
     async def crashing():
         nonlocal i
         i += 1
@@ -186,7 +172,7 @@ async def test_retry_decorator_callback_async_callback():
 
     i = 0
 
-    @retry(on_exception=callback)
+    @retry(on_exception=callback, delay=0.01)
     async def crashing():
         nonlocal i
         i += 1
