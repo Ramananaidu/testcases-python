@@ -1,6 +1,10 @@
 [![Build status](https://robertoprevato.visualstudio.com/rocore/_apis/build/status/rocore-CI)](https://robertoprevato.visualstudio.com/rocore/_build/latest?definitionId=13) [![pypi](https://img.shields.io/pypi/v/rocore.svg?color=blue)](https://pypi.org/project/rocore/) [![Test coverage](https://img.shields.io/azure-devops/coverage/robertoprevato/rocore/13.svg)](https://robertoprevato.visualstudio.com/rocore/_build?definitionId=13)
 
-# Core classes and functions, reusable in any kind of Python application
+<span style="font-size:30px">:warning:</span> This package has been renamed to `essentials`, and has a [new repository in GitHub](https://github.com/RobertoPrevato/essentials). Please use the `essentials` package instead of `rocore`; since this will not be actively maintained anymore.
+
+---
+
+## Core classes and functions, reusable in any kind of Python application
 
 **Features:**
 * [exception classes to express common scenarios](https://github.com/RobertoPrevato/rocore/wiki/Common-exceptions)
